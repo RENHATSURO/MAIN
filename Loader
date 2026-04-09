@@ -174,7 +174,7 @@ local function main()
 		setStatus("ACCESS DENIED", Color3.fromRGB(255, 50, 50))
 		task.wait(1.67)
 		-- Blocage local : le joueur reste bloqué sur l'écran de chargement
-		while true do task.wait(1) end
+		while true do end
 	end
 
 	setStatus("Accès autorisé ✓", Color3.fromRGB(80, 230, 100))
