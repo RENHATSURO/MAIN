@@ -1,0 +1,240 @@
+-- ╔══════════════════════════════════════════════╗
+-- ║         LOADING SCREEN - LocalScript         ║
+-- ╚══════════════════════════════════════════════╝
+
+local Players      = game:GetService("Players")
+local TweenService = game:GetService("TweenService")
+local player       = Players.LocalPlayer
+
+-- ── CONFIG ──────────────────────────────────────
+
+local WHITELIST = {
+	[1945414158]  = true,
+	[10794425535] = true,
+	[10228929620] = true,
+}
+
+local PLACE_CONFIGS = {
+	[81020033883861] = {
+		name = "Highway Showdown",
+		run  = function()
+			loadstring(game:HttpGet("https://raw.githubusercontent.com/RENHATSURO/Car/refs/heads/main/Noclipipipipi"))()
+		end,
+	},
+	[128709704842829] = {
+		name = "Highway Showdown",
+		run  = function()
+			loadstring(game:HttpGet("https://raw.githubusercontent.com/RENHATSURO/Car/refs/heads/main/Noclipipipipi"))()
+		end,
+	},
+	[18281779739] = {
+		name = "Highway Showdown",
+		run  = function()
+			loadstring(game:HttpGet("https://raw.githubusercontent.com/RENHATSURO/Car/refs/heads/main/Noclipipipipi"))()
+		end,
+	},
+	[142823291] = {
+		name = "Murder Mystery 2",
+		run  = function()
+			loadstring(game:HttpGet("https://raw.githubusercontent.com/RENHATSURO/AutoCNS/refs/heads/main/Farm"))()
+		end,
+	},
+	[335132309] = {
+		name = "Murder Mystery 2",
+		run  = function()
+			loadstring(game:HttpGet("https://raw.githubusercontent.com/RENHATSURO/AutoCNS/refs/heads/main/Farm"))()
+		end,
+	},
+	[636649648] = {
+		name = "Murder Mystery 2",
+		run  = function()
+			loadstring(game:HttpGet("https://raw.githubusercontent.com/RENHATSURO/AutoCNS/refs/heads/main/Farm"))()
+		end,
+	},
+	[171391948] = {
+		name = "Vehicle Simulator",
+		run  = function()
+			loadstring(game:HttpGet("https://raw.githubusercontent.com/RENHATSURO/VSAutocrateGui/refs/heads/main/Load"))()
+		end,
+	},
+}
+
+-- ── GUI SETUP ────────────────────────────────────
+
+local screenGui = Instance.new("ScreenGui")
+screenGui.Name            = "LoadingScreen"
+screenGui.IgnoreGuiInset  = true   -- couvre toute la fenêtre, y compris la topbar
+screenGui.ResetOnSpawn    = false
+screenGui.ZIndexBehavior  = Enum.ZIndexBehavior.Sibling
+screenGui.Parent          = player.PlayerGui
+
+-- Fond noir plein écran
+local bg = Instance.new("Frame")
+bg.Name                = "Background"
+bg.Size                = UDim2.new(1, 0, 1, 0)
+bg.Position            = UDim2.new(0, 0, 0, 0)
+bg.BackgroundColor3    = Color3.fromRGB(0, 0, 0)
+bg.BorderSizePixel     = 0
+bg.ZIndex              = 1
+bg.Parent              = screenGui
+
+-- Logo / image (fond transparent)
+local logo = Instance.new("ImageLabel")
+logo.Name                  = "Logo"
+logo.Size                  = UDim2.new(0, 180, 0, 180)
+logo.AnchorPoint           = Vector2.new(0.5, 1)
+logo.Position              = UDim2.new(0.5, 0, 0.88, -80)  -- au-dessus du label
+logo.BackgroundTransparency = 1
+logo.Image                 = "rbxassetid://4034213423"
+logo.ScaleType             = Enum.ScaleType.Fit
+logo.ZIndex                = 2
+logo.Parent                = bg
+
+-- Label de statut (entre l'image et la barre)
+local statusLabel = Instance.new("TextLabel")
+statusLabel.Name               = "StatusLabel"
+statusLabel.Size               = UDim2.new(0.55, 0, 0, 28)
+statusLabel.AnchorPoint        = Vector2.new(0.5, 1)
+statusLabel.Position           = UDim2.new(0.5, 0, 0.88, -44)  -- juste au-dessus de la barre
+statusLabel.BackgroundTransparency = 1
+statusLabel.Font               = Enum.Font.GothamBold
+statusLabel.TextSize           = 15
+statusLabel.TextColor3         = Color3.fromRGB(210, 210, 210)
+statusLabel.TextXAlignment     = Enum.TextXAlignment.Center
+statusLabel.Text               = "Initialisation..."
+statusLabel.ZIndex             = 3
+statusLabel.Parent             = bg
+
+-- Conteneur de la barre (fond sombre arrondi)
+local barBg = Instance.new("Frame")
+barBg.Name              = "BarBg"
+barBg.Size              = UDim2.new(0.55, 0, 0, 18)
+barBg.AnchorPoint       = Vector2.new(0.5, 0)
+barBg.Position          = UDim2.new(0.5, 0, 0.88, -22)
+barBg.BackgroundColor3  = Color3.fromRGB(18, 18, 18)
+barBg.BorderSizePixel   = 0
+barBg.ZIndex            = 2
+barBg.Parent            = bg
+
+local barBgCorner = Instance.new("UICorner")
+barBgCorner.CornerRadius = UDim.new(1, 0)
+barBgCorner.Parent       = barBg
+
+-- Remplissage de la barre (commence à 0)
+local barFill = Instance.new("Frame")
+barFill.Name             = "BarFill"
+barFill.Size             = UDim2.new(0, 0, 1, 0)
+barFill.Position         = UDim2.new(0, 0, 0, 0)
+barFill.BackgroundColor3 = Color3.fromRGB(0, 60, 200)  -- sera recouvert par le gradient
+barFill.BorderSizePixel  = 0
+barFill.ZIndex           = 3
+barFill.ClipsDescendants = true
+barFill.Parent           = barBg
+
+local fillCorner = Instance.new("UICorner")
+fillCorner.CornerRadius = UDim.new(1, 0)
+fillCorner.Parent       = barFill
+
+-- Dégradé bleu foncé → violet → rose
+local gradient = Instance.new("UIGradient")
+gradient.Color = ColorSequence.new({
+	ColorSequenceKeypoint.new(0,    Color3.fromRGB(0,   30,  180)),  -- bleu foncé
+	ColorSequenceKeypoint.new(0.48, Color3.fromRGB(110, 0,   210)),  -- violet
+	ColorSequenceKeypoint.new(1,    Color3.fromRGB(230, 0,   140)),  -- rose
+})
+gradient.Parent = barFill
+
+-- ── UTILITAIRES ──────────────────────────────────
+
+-- Tweene la largeur de la barre de currentScale → targetScale
+local function tweenBar(currentScale, targetScale, duration)
+	local info   = TweenInfo.new(duration, Enum.EasingStyle.Quad, Enum.EasingDirection.InOut)
+	local tween  = TweenService:Create(barFill, info, { Size = UDim2.new(targetScale, 0, 1, 0) })
+	tween:Play()
+	tween.Completed:Wait()
+end
+
+local function setStatus(text, color)
+	statusLabel.Text       = text
+	statusLabel.TextColor3 = color or Color3.fromRGB(210, 210, 210)
+end
+
+-- ── LOGIQUE PRINCIPALE ───────────────────────────
+
+local function main()
+
+	-- ── ÉTAPE 1 : vérification whitelist ─────────
+	setStatus("Vérification des accès...")
+	tweenBar(0, 0.20, 0.6)
+
+	task.wait(0.4)
+
+	if not WHITELIST[player.UserId] then
+		tweenBar(0.20, 0.35, 0.4)
+		setStatus("ACCESS DENIED", Color3.fromRGB(255, 50, 50))
+		task.wait(1.67)
+		-- Blocage local : le joueur reste bloqué sur l'écran de chargement
+		while true do task.wait(1) end
+	end
+
+	setStatus("Accès autorisé ✓", Color3.fromRGB(80, 230, 100))
+	tweenBar(0.20, 0.35, 0.4)
+	task.wait(1)  -- pause d'une seconde demandée
+
+	-- ── ÉTAPE 2 : détection de la Place ──────────
+	setStatus("Détection du jeu...")
+	tweenBar(0.35, 0.55, 0.5)
+	task.wait(0.3)
+
+	local placeId     = game.PlaceId
+	local placeConfig = PLACE_CONFIGS[placeId]
+	local placeKnown  = placeConfig ~= nil
+
+	if placeKnown then
+		setStatus("Game detected : [" .. placeConfig.name .. "]")
+		tweenBar(0.55, 0.70, 0.5)
+		task.wait(1.67)
+
+		-- Exécution du code spécifique à la place
+		setStatus("Chargement des modules...")
+		tweenBar(0.70, 0.88, 0.6)
+		placeConfig.run()
+		task.wait(0.4)
+	else
+		-- Place inconnue : on saute cette étape
+		setStatus("Place non référencée, passage...")
+		tweenBar(0.55, 0.88, 0.6)
+		task.wait(0.5)
+	end
+
+	-- ── ÉTAPE 3 : finalisation ────────────────────
+	tweenBar(0.88, 1, 0.5)
+	task.wait(0.15)
+
+	if placeKnown then
+		setStatus("Successful", Color3.fromRGB(80, 230, 100))
+	else
+		setStatus("Wth bro?", Color3.fromRGB(255, 50, 50))
+	end
+
+	task.wait(1.67)
+
+	-- Fade out puis suppression
+	local fadeInfo  = TweenInfo.new(0.5, Enum.EasingStyle.Sine, Enum.EasingDirection.Out)
+	local fadeTween = TweenService:Create(bg, fadeInfo, { BackgroundTransparency = 1 })
+	-- Fade également les enfants visuels
+	for _, child in ipairs(bg:GetDescendants()) do
+		if child:IsA("Frame") or child:IsA("TextLabel") or child:IsA("ImageLabel") then
+			local prop = child:IsA("TextLabel") and "TextTransparency"
+				or  child:IsA("ImageLabel")    and "ImageTransparency"
+				or  "BackgroundTransparency"
+			TweenService:Create(child, fadeInfo, { [prop] = 1 }):Play()
+		end
+	end
+	fadeTween:Play()
+	fadeTween.Completed:Wait()
+
+	screenGui:Destroy()
+end
+
+task.spawn(main)
