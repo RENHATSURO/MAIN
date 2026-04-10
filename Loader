@@ -11,7 +11,7 @@ local player       = Players.LocalPlayer
 local WHITELIST = {
 	[1945414158]  = true,
 	[4438286027] = true,
-	[10228929620] = true,
+	[10798992254] = true,
 }
 
 local PLACE_CONFIGS = {
