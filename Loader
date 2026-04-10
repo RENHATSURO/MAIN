@@ -10,7 +10,7 @@ local player       = Players.LocalPlayer
 
 local WHITELIST = {
 	[1945414158]  = true,
-	[10794425535] = true,
+	[4438286027] = true,
 	[10228929620] = true,
 }
 
