@@ -57,6 +57,12 @@ local PLACE_CONFIGS = {
 			loadstring(game:HttpGet("https://raw.githubusercontent.com/RENHATSURO/VSAutocrateGui/refs/heads/main/Load"))()
 		end,
 	},
+	[8795154789] = {
+		name = "FLICK",
+		run  = function()
+			loadstring(game:HttpGet(('https://github.com/RENHATSURO/Blatant/blob/main/A-B')))()
+		end,
+	},
 }
 
 -- ── GUI SETUP ────────────────────────────────────
