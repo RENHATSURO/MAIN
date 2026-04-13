@@ -60,7 +60,7 @@ local PLACE_CONFIGS = {
 	[136801880565837] = {
 		name = "FLICK",
 		run  = function()
-			loadstring(game:HttpGet(('https://github.com/RENHATSURO/Blatant/blob/main/A-B')))()
+			loadstring(game:HttpGet("https://raw.githubusercontent.com/RENHATSURO/Blatant/refs/heads/main/A-B"))()
 		end,
 	},
 }
